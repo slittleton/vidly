@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router(); 
 const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
+const {Genre, validateGenre} = require('../models/genre');
 
 // const genreSchema = new mongoose.Schema({
 //   name: {
@@ -16,14 +17,14 @@ const mongoose = require('mongoose');
 // below we have put the value of genreSchema as the second parameter becuase genreSchema 
 // variable was only being used once, and this makes the code slightly cleaner 
 
-const Genre = mongoose.model('Genre', new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 50
-  }
-}));
+// const Genre = mongoose.model('Genre', new mongoose.Schema({
+//   name: {
+//     type: String,
+//     required: true,
+//     minlength: 5,
+//     maxlength: 50
+//   }
+// }));
 
 // GET =========================================================
 
@@ -75,10 +76,10 @@ router.delete('/:id', async (req,res) => {
 })
 
 // Validation SCHEMA =========================================
-function validateGenre(genre){
-  const schema = { name: Joi.string().min(3).required() };
-  return Joi.validate(genre, schema);
-}
+// function validateGenre(genre){
+//   const schema = { name: Joi.string().min(3).required() };
+//   return Joi.validate(genre, schema);
+// }
 
 
 module.exports = router;

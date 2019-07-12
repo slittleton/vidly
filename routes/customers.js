@@ -35,10 +35,10 @@ router.put('/:id', async(req, res) => {
   const { error } = validateCustomer(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
-  const customer = await Customer
-    .findByIdAndUpdate(req.params.id, {
-      isGold: req.body.isGold,
+  const customer = await Customer.findByIdAndUpdate(req.params.id,
+    { 
       name: req.body.name,
+      isGold: req.body.isGold,
       phone: req.body.phone
     }, { new: true });
 

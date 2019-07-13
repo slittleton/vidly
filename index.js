@@ -1,12 +1,22 @@
-const Joi = require('@hapi/joi');
-Joi.objectId = require('joi-objectid')(Joi);
+
 const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const config = require('config');
+
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
 const movies = require('./routes/movies');
 const rentals = require('./routes/rentals');
-const app = express();
-const mongoose = require('mongoose');
+const users = require('./routes/users');
+const auth = require('./routes/auth');
+
+if(!config.get('jwtPrivateKey')){
+  console.log('FATAL ERROR: jwtPrivateKey is not defined')
+  process.exit(1) 
+    // 0 as argument means success, any other character indicates 
+    // failure and triggers exit()
+}
 
 // Connect to database
 mongoose.connect("mongodb://localhost/vidly")
@@ -19,6 +29,8 @@ app.use('/api/genres', genres);
 app.use('/api/customers', customers);
 app.use('/api/movies', movies);
 app.use('/api/rentals', rentals);
+app.use('/api/users', users);
+app.use('/api/auth', auth);
 
 const port = process.env.PORT || 5000;
 

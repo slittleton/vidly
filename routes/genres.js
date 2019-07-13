@@ -3,6 +3,7 @@ const router = express.Router();
 const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
 const {Genre, validateGenre} = require('../models/genre');
+const auth = require('../middleware/auth');
 
 // const genreSchema = new mongoose.Schema({
 //   name: {
@@ -40,7 +41,8 @@ router.get('/:id', async (req,res)=>{
 })
 
 // POST =========================================================
-router.post('/', async (req,res) => {
+router.post('/', auth, async (req,res) => {
+
   const { error } = validateGenre(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
@@ -52,7 +54,7 @@ router.post('/', async (req,res) => {
 
 // PUT =========================================================
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   // validate genre received in request before attempting to add it to database
   const { error } = validateGenre(req.body);
   if(error) return res.status(400).send(error.details[0].message);
@@ -68,7 +70,7 @@ router.put('/:id', async (req, res) => {
 
 // DELETE =========================================================
 
-router.delete('/:id', async (req,res) => {
+router.delete('/:id', auth, async (req,res) => {
   const genre = await Genre.findByIdAndRemove(req.params.id);
   if(!genre) return res.status(404).send('Genre ID does not exist');
 

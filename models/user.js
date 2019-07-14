@@ -24,6 +24,9 @@ const userSchema = new mongoose.Schema({
     minlength: 6,
     maxlength: 1024,
     unique: true
+  },
+  isAdmin: {
+    type: Boolean
   }
 });
 
@@ -31,7 +34,7 @@ userSchema.methods.generateAuthToken = function(){
   // the second argument for jwt.sign() is private key used to create
   // a digital signature
   // secret key should be set as env variable using config (npm i config)
-  const token = jwt.sign({_id: this._id}, config.get('jwtPrivateKey'));
+  const token = jwt.sign({_id: this._id, isAdmin: this.isAdmin}, config.get('jwtPrivateKey'));
 
   return token
 }

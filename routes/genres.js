@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router(); 
-const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
 const {Genre, validateGenre} = require('../models/genre');
 const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
+
 
 // const genreSchema = new mongoose.Schema({
 //   name: {
@@ -29,10 +30,12 @@ const auth = require('../middleware/auth');
 
 // GET =========================================================
 
-router.get('/', async (req, res)=>{
-  const genres = await Genre.find().sort({name: 1})
-  res.send(genres)
-})
+
+router.get('/', async (req, res, next)=>{
+
+    const genres = await Genre.find().sort({name: 1})
+    res.send(genres);
+});
 
 router.get('/:id', async (req,res)=>{
   const genre = await Genre.findById(req.params.id);
@@ -41,7 +44,7 @@ router.get('/:id', async (req,res)=>{
 })
 
 // POST =========================================================
-router.post('/', auth, async (req,res) => {
+router.post('/', auth,async (req,res) => {
 
   const { error } = validateGenre(req.body);
   if(error) return res.status(400).send(error.details[0].message);
@@ -70,7 +73,7 @@ router.put('/:id', auth, async (req, res) => {
 
 // DELETE =========================================================
 
-router.delete('/:id', auth, async (req,res) => {
+router.delete('/:id', [auth, admin], async (req,res) => {
   const genre = await Genre.findByIdAndRemove(req.params.id);
   if(!genre) return res.status(404).send('Genre ID does not exist');
 

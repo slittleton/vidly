@@ -4,10 +4,16 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const { User, validateUser } = require('../models/user');
+const auth = require('../middleware/auth');
 
+// GET ===========================================================
+router.get('/me', auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select('-password');
+  res.send(user)
+})
 
 // POST - Register User ============================================
-router.post('/', async(req, res)=> {
+router.post('/', async (req, res)=> {
   const { error } = validateUser(req.body);
   if(error) res.status(400).send(error.details[0].message);
 
